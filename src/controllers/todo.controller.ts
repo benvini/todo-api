@@ -1,12 +1,14 @@
 import { Request, Response } from "express";
+import { Todo } from "models/todo.model";
 import { TodoService } from "../services/todo.service";
 
 const todoService = new TodoService();
 
 export class TodoController {
   async createTodo(req: Request, res: Response) {
+    const sanitizedTodo = TodoController.sanitize(req.body);
     try {
-      const todo = await todoService.createTodo(req.body);
+      const todo = await todoService.createTodo(sanitizedTodo);
       return res.status(201).json(todo);
     } catch (error) {
       return res.status(500).json({ error: (error as Error).message });
@@ -16,7 +18,6 @@ export class TodoController {
   async getAllTodos(req: Request, res: Response) {
     try {
       const todos = await todoService.getAllTodos();
-      console.log(todos);
       return res.status(200).json(todos);
     } catch (error) {
       return res.status(500).json({ error: (error as Error).message });
@@ -37,7 +38,8 @@ export class TodoController {
 
   async updateTodo(req: Request, res: Response) {
     try {
-      const todo = await todoService.updateTodo(req.params.id, req.body);
+      const sanitizedTodo = TodoController.sanitize(req.body);
+      const todo = await todoService.updateTodo(req.params.id, sanitizedTodo);
       if (!todo) {
         return res.status(404).json({ error: "Todo not found" });
       }
@@ -58,4 +60,12 @@ export class TodoController {
       return res.status(500).json({ error: (error as Error).message });
     }
   }
+
+  static sanitize = ({ message, completed, priority }: Todo) => {
+    return {
+      message,
+      completed,
+      priority,
+    };
+  };
 }

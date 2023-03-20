@@ -1,7 +1,7 @@
-import { Todo, TodoModel } from "../models/todo.model";
+import { TodoModel, TodoRequestPayload } from "../models/todo.model";
 
 export class TodoService {
-  async createTodo(todo: Todo) {
+  async createTodo(todo: TodoRequestPayload) {
     return await TodoModel.create(todo);
   }
 
@@ -13,7 +13,7 @@ export class TodoService {
     return await TodoModel.findById(id);
   }
 
-  async updateTodo(id: string, todo: Todo) {
+  async updateTodo(id: string, todo: TodoRequestPayload) {
     return await TodoModel.findOneAndUpdate({ _id: id }, todo, {
       new: true,
       useFindAndModify: false,

@@ -9,6 +9,12 @@ export interface Todo {
   createdAt: Date;
 }
 
+export interface TodoRequestPayload {
+  message: string;
+  completed: boolean;
+  priority: string;
+}
+
 const todoSchema = new mongoose.Schema<Todo>({
   message: { type: String, required: true },
   completed: { type: Boolean, default: false, required: true },
